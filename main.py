@@ -15,6 +15,9 @@ def load_urls():
 def save_urls(urls):
     with open('urls.pkl', 'wb') as f:
         pickle.dump(urls, f)
+@app.get("/")
+async def read_url(short_url: str):
+    return "hello"
 
 @app.get("/{short_url}")
 async def read_url(short_url: str):
