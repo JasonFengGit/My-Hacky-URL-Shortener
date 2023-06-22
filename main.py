@@ -1,7 +1,11 @@
 from fastapi import FastAPI, HTTPException, Response
+from pydantic import BaseModel
 import secrets
 import pickle
 import os
+
+class Url(BaseModel):
+    url: str
 
 app = FastAPI()
 
@@ -10,14 +14,11 @@ def load_urls():
         with open('urls.pkl', 'rb') as f:
             return pickle.load(f)
     else:
-        return {}
+        return {"t":"google.com"}
 
 def save_urls(urls):
     with open('urls.pkl', 'wb') as f:
         pickle.dump(urls, f)
-@app.get("/")
-async def read_url(short_url: str):
-    return "hello"
 
 @app.get("/{short_url}")
 async def read_url(short_url: str):
@@ -30,11 +31,11 @@ async def read_url(short_url: str):
     return response
 
 @app.post("/shorten/")
-async def shorten_url(url: str):
+async def shorten_url(url: Url):
     short_url = secrets.token_hex(3)  # Generate a random 6-character hex string
     urls = load_urls()
     while short_url in urls:
         short_url = secrets.token_hex(3)  # Regenerate if the URL is already in use
-    urls[short_url] = url
+    urls[short_url] = url.url
     save_urls(urls)
     return {"short_url": short_url}
