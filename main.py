@@ -12,9 +12,12 @@ app = FastAPI()
 def load_urls():
     if os.path.exists('urls.pkl'):
         with open('urls.pkl', 'rb') as f:
-            return pickle.load(f)
+            d = pickle.load(f)
+            d["703e64"] = "https://twitter.com/64bits_ai"
+            d["167e3f"] = "https://twitter.com/64bits_ai"
+            return d
     else:
-        return {"t":"google.com"}
+        return {"703e64":"https://twitter.com/64bits_ai", "167e3f":"https://twitter.com/64bits_ai"}
 
 def save_urls(urls):
     with open('urls.pkl', 'wb') as f:
